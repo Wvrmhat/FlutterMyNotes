@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1046147688836",
+    "project_id": "wvrmhat-mynotes",
+    "storage_bucket": "wvrmhat-mynotes.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1046147688836:android:f0f89cad4635299e7715d1",
+        "android_client_info": {
+          "package_name": "com.fluttertut.mynotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4GSvdVxRuJPf4TOqL2_6SOSkhG6TQFZc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
