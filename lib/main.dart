@@ -5,6 +5,7 @@ import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/views/login_view.dart';
 import 'package:mynotes/views/register_view.dart';
 import 'package:mynotes/views/verify_email_view.dart';
+import 'dart:developer' as devtools show log;
 
 
 
@@ -66,18 +67,20 @@ class Homepage extends StatelessWidget {
            {
               if(user.emailVerified)
               {
-                print("Email is verified");
+                return const NotesView();
               }
               else
               {
                  return const VerifyEmailView();
+                 
               }
            }
            else
            {
               return const LoginView();
            }
-           return const Text("Done");
+           // ignore: dead_code
+           return const NotesView();      // can remove if there are errors
 
           default: 
               return const CircularProgressIndicator();
@@ -88,52 +91,76 @@ class Homepage extends StatelessWidget {
   }
 }
 
+enum MenuAction { logout }
 
 
 
+class NotesView extends StatefulWidget {
+  const NotesView({super.key});
 
+  @override
+  State<NotesView> createState() => _NotesViewState();
+}
 
-// class _MyHomePageState extends State<MyHomePage> {
-//   int _counter = 0;
+class _NotesViewState extends State<NotesView> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Main UI"),
+        actions: [
+          PopupMenuButton<MenuAction>(
+            onSelected: (value) async {
+              switch (value) {
+                
+                case MenuAction.logout:
+                  final shouldLogOut = await showLogOutDialog(context);
 
-//   void _incrementCounter() {
-//     setState(() {
+                  if (shouldLogOut) {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      '/login/', 
+                      (_) => false,
+                    );
+                  }
+                  
+                  devtools.log(shouldLogOut.toString());
+                  break;
+              }
+            
+          },
+          itemBuilder: (context) {
+              return [
+                const PopupMenuItem<MenuAction>(
+                  value: MenuAction.logout, 
+                  child:  Text("Log Out"),
+                ),
+              ];
+            },
+          )
+        ],
+      ),
+      body: const  Text("Hello world"),
+    );
+  }
+}
 
-//       _counter++;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-
-//     return Scaffold(
-//       appBar: AppBar(
-
-//         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
-//         title: Text(widget.title),
-//       ),
-//       body: Center(
-
-//         child: Column(
-
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             const Text(
-//               'You have pushed the button this many times:',
-//             ),
-//             Text(
-//               '$_counter',
-//               style: Theme.of(context).textTheme.headlineMedium,
-//             ),
-//           ],
-//         ),
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: _incrementCounter,
-//         tooltip: 'Increment',
-//         child: const Icon(Icons.add),
-//       ), // This trailing comma makes auto-formatting nicer for build methods.
-//     );
-//   }
-// }
+Future<bool> showLogOutDialog(BuildContext context) {
+  return showDialog<bool>(
+    context: context, 
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("Sign out"),
+        content: const Text("Are you sure you want to sign out?"),
+        actions: [
+          TextButton(onPressed: () {
+            Navigator.of(context).pop(false);
+          }, child: const Text("Cancel"),),
+          TextButton(onPressed: () {
+            Navigator.of(context).pop(true);
+          }, child: const Text("Log out"),),
+        ],
+      );
+    },
+  ).then((value) => value ?? false);
+}
