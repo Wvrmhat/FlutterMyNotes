@@ -24,6 +24,7 @@ void main() {
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
+        verifyEmailRoute: (context) => const VerifyEmailView(),
       },
     ),
   );
@@ -167,19 +168,3 @@ Future<bool> showLogOutDialog(BuildContext context) {
   ).then((value) => value ?? false);
 }
 
-Future<void> showErrorDialog(BuildContext context, String text,) 
-{
-  return showDialog(context: context, builder:(context) {
-    return AlertDialog(
-      title: const Text('An error occured'),
-      content: Text(text),
-      actions: [
-        TextButton(onPressed: () {
-          Navigator.of(context).pop();       
-        }, 
-        child: const Text("Ok")),
-      ],
-    );
-    
-  },);
-}
