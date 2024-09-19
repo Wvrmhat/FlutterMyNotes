@@ -4,9 +4,6 @@ import 'package:mynotes/services/auth/auth_user.dart';
 import 'package:test/test.dart';
 
 
-import 'package:test/test.dart';
-
-
 void main() {
 
   group('Mock Authentication', () {           // tests can be grouped which can be run entirely
@@ -27,17 +24,17 @@ void main() {
       expect(provider.isInitialized, true);
     });
 
-    test('User should be null after initialization', () {
+    test('User should be null after initialization', () {     // test if user is null after initialization
       expect(provider.currentUser, null);
     });
 
     test(
-      'Should be able to initialize in less than 2 seconds',
+      'Should be able to initialize in less than 2 seconds',      // asyncronous testing with a timeout
       () async {
-        await provider.initialize();
-        expect(provider.isInitialized, true);
+        await provider.initialize();  
+        expect(provider.isInitialized, true);       //   if initialize takes more than 2 seconds, test will fail
       },
-      timeout: const Timeout(Duration(seconds: 2)),
+      timeout: const Timeout(Duration(seconds: 2)),     // ensures the function returns to the test before the timeout
     );
 
     test('Create user should delegate to logIn function', () async {
@@ -56,7 +53,7 @@ void main() {
       expect(badPasswordUser,
           throwsA(const TypeMatcher<WrongPasswordAuthException>()));
 
-      final user = await provider.createUser(
+      final user = await provider.createUser(       //mock provider tests user
         email: 'foo',
         password: 'bar',
       );
@@ -64,7 +61,7 @@ void main() {
       expect(user.isEmailVerified, false);
     });
 
-    test('Logged in user should be able to get verified', () {
+    test('Logged in user should be able to get verified', () {    
       provider.sendEmailVerification();
       final user = provider.currentUser;
       expect(user, isNotNull);
@@ -119,7 +116,7 @@ class MockAuthProvider implements AuthProvider {      // mock auth code with its
   }) {
     if (!isInitialized) throw NotInitializedException();
     if (email == 'foo@bar.com') throw UserNotFoundAuthException();
-    if (password == 'wawawawa') throw WrongPasswordAuthException();
+    if (password == 'bar') throw WrongPasswordAuthException();
     const user = AuthUser(isEmailVerified: false);
     _user = user;
     return Future.value(user);
