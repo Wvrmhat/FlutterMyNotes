@@ -10,6 +10,7 @@ import 'package:mynotes/views/verify_email_view.dart';
 
 
 
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   
@@ -20,7 +21,7 @@ void main() {
         primarySwatch: Colors.blue,
       ),
       home: const Homepage(),
-      routes: {
+      routes: {      
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NotesView(),
