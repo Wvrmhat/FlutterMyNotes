@@ -37,11 +37,13 @@ void main() {
       timeout: const Timeout(Duration(seconds: 2)),     // ensures the function returns to the test before the timeout
     );
 
-    test('Create user should delegate to logIn function', () async {
-      final badEmailUser = provider.createUser(
-        email: 'foo@bar.com',
-        password: 'anypassword',
-      );
+    test(
+      'Create user should delegate to logIn function', 
+      () async {
+        final badEmailUser = provider.createUser(
+          email: 'foo@bar.com',
+          password: 'anypassword',
+       );
 
       expect(badEmailUser,
           throwsA(const TypeMatcher<UserNotFoundAuthException>()));
@@ -117,7 +119,7 @@ class MockAuthProvider implements AuthProvider {      // mock auth code with its
     if (!isInitialized) throw NotInitializedException();
     if (email == 'foo@bar.com') throw UserNotFoundAuthException();
     if (password == 'bar') throw WrongPasswordAuthException();
-    const user = AuthUser(isEmailVerified: false);
+    const user = AuthUser(isEmailVerified: false, email: 'foo@bar.com',);
     _user = user;
     return Future.value(user);
   }
@@ -135,7 +137,7 @@ class MockAuthProvider implements AuthProvider {      // mock auth code with its
     if (!isInitialized) throw NotInitializedException();
     final user = _user;
     if (user == null) throw UserNotFoundAuthException();
-    const newUser = AuthUser(isEmailVerified: true);
+    const newUser = AuthUser(isEmailVerified: true, email: 'foo@bar.com',);
     _user = newUser;
   }
 }
