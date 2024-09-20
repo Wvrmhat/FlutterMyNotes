@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/enums/menu_action.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
+import 'package:mynotes/services/crud/notes_service.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -11,7 +12,28 @@ class NotesView extends StatefulWidget {
   State<NotesView> createState() => _NotesViewState();
 }
 
+
 class _NotesViewState extends State<NotesView> {
+
+  late final NotesService _notesService;
+
+  // make a call to create current user by getting the user email, so we expose the user email
+  String get userEmail => AuthService.firebase().currentUser!.email!;       // ! is used to force unwrap optionals
+
+  @override
+  void initState() {      // have a notes service in our init state that is open
+    _notesService = NotesService();     // _noteservice is and instance of NoteService
+    _notesService.open();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {      // we close the database
+    _notesService.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +70,39 @@ class _NotesViewState extends State<NotesView> {
           )
         ],
       ),
-      body: const  Text("Hello world"),
+      body: FutureBuilder(
+       future: _notesService.getOrCreateUser(email: userEmail), 
+       builder: (context, snapshot) {
+
+
+        switch (snapshot.connectionState) {
+
+          case ConnectionState.done:        // .done is a state that happens when a future has completed its task.
+            return StreamBuilder(           // calculates notes and returns them from the notes
+              stream: _notesService.allNotes,     
+              builder: (context, snapshot) {
+
+                switch (snapshot.connectionState) {
+                                      
+                  case ConnectionState.waiting:
+                    return const Text("Waiting for all notes");
+                  default:
+                  return const CircularProgressIndicator();
+                }
+
+              }
+            );
+
+          default:
+            return const CircularProgressIndicator();
+
+        
+        }
+        
+
+
+       },
+      ),
     );
   }
 }
