@@ -16,11 +16,18 @@ class NotesService {
 
   // Singleton of NotesService
   static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance();   //private instance
+  NotesService._sharedInstance() {   //private instance
+    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes); //ensures anyone who starts listening, if its new subsriber then the callback gets called and stream gets populated
+      },
+    );
+  }
+
   factory NotesService() => _shared;
   
-  final _notesStreamController =    // broadcast closes streamingchannel before you can listen to it again, prevents listening errors
-    StreamController<List<DatabaseNote>>.broadcast();    // control a stream of a list of database notes
+    //  StreamController<List<DatabaseNote>>.broadcast(); // broadcast closes streamingchannel before you can listen to it again, prevents listening errors
+    late final StreamController<List<DatabaseNote>> _notesStreamController;    // control a stream of a list of database notes
   
   // retreive all notes
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;    
