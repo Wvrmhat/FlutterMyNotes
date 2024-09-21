@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:mynotes/services/crud/crud_exceptions.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' show join;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 
 class NotesService {
@@ -47,7 +49,6 @@ class NotesService {
     final allNotes = await getAllNotes();
     _notes = allNotes.toList();
     _notesStreamController.add(_notes);   // a stream is the evolution of a value throught time
-
 
   }
 
@@ -281,6 +282,13 @@ class NotesService {
     throw DatabaseAlreadyOpenException();
   }
   try {
+
+    if (!isMobilePlatform())        // initialises database if it is NOT a mobile platform, since desktop needs databases to be initialised
+    {
+      sqfliteFfiInit();
+      databaseFactory = databaseFactoryFfi;
+    }
+
     final docsPath = await getApplicationDocumentsDirectory();
     final dbPath = join(docsPath.path, dbName);
     final db = await openDatabase(dbPath);
@@ -356,6 +364,12 @@ class DatabaseNote {
   int get hashCode => id.hashCode;
   
 }
+
+bool isMobilePlatform()           // detects if platform is mobile
+  {
+    return (Platform.isAndroid || Platform.isIOS);
+  }
+
 
 const dbName = 'notes.db';     // the filename
 const noteTable = 'note';

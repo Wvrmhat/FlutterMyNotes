@@ -51,11 +51,12 @@ class _NewNoteViewState extends State<NewNoteView> {
       return existingNote;
     }
 
-    final currentUser = AuthService.firebase().currentUser!;    // we expect a user to be there, app crashes if user does not exist..this is because they should not be there
-    final email = currentUser.email!;
-    final owner = await _notesService.getUser(email: email);
+      final currentUser = AuthService.firebase().currentUser!;    // we expect a user to be there, app crashes if user does not exist..this is because they should not be there
+      final email = currentUser.email!;
+      final owner = await _notesService.getUser(email: email);
 
-    return await _notesService.createNote(owner: owner);
+      return await _notesService.createNote(owner: owner);  
+
   }
   // if user adds but goes back, then notes will be full of empty cells if they dont populate it. This function checks if its empty
   void _deleteNoteIfTextIsEmpty() {
@@ -100,8 +101,7 @@ class _NewNoteViewState extends State<NewNoteView> {
         // look for done state
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-          // if (snapshot.hasData && snapshot.data != null)
-          // {
+
             _note = snapshot.data as DatabaseNote;
             _setupTextControllerListener();
             return TextField( 
@@ -112,11 +112,7 @@ class _NewNoteViewState extends State<NewNoteView> {
                 hintText: "Start typing your note...",
               ),
             );
-          // }
-          // else
-          // {
-          //  return const CircularProgressIndicator();
-          // }
+
 
           default:
             return const CircularProgressIndicator();
