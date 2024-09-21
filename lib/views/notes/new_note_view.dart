@@ -100,6 +100,8 @@ class _NewNoteViewState extends State<NewNoteView> {
         // look for done state
         switch (snapshot.connectionState) {
           case ConnectionState.done:
+          // if (snapshot.hasData && snapshot.data != null)
+          // {
             _note = snapshot.data as DatabaseNote;
             _setupTextControllerListener();
             return TextField( 
@@ -110,9 +112,14 @@ class _NewNoteViewState extends State<NewNoteView> {
                 hintText: "Start typing your note...",
               ),
             );
+          // }
+          // else
+          // {
+          //  return const CircularProgressIndicator();
+          // }
 
           default:
-          return const CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
         },
       ), 

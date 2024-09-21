@@ -10,8 +10,6 @@ import 'package:path/path.dart' show join;
 class NotesService {
   Database? _db;
 
-
-  
   List<DatabaseNote> _notes = [];   
 
   // Singleton of NotesService
@@ -374,7 +372,7 @@ const createUserTable = ''' CREATE TABLE IF NOT EXISTS "user" (
       PRIMARY KEY("id" AUTOINCREMENT)
     ); ''';
 
-const createNoteTable = ''' CREATE TABLE IF NOTE EXISTS "note" (
+const createNoteTable = ''' CREATE TABLE IF NOT EXISTS "note" (
       "id"	INTEGER NOT NULL,
       "user_id"	INTEGER NOT NULL,
       "text"	TEXT,
