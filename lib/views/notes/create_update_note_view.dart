@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
+import 'package:mynotes/utilities/dialogs/generics/get_arguments.dart';
 
-class NewNoteView extends StatefulWidget {
-  const NewNoteView({super.key});
+class CreateUpdateNoteView extends StatefulWidget {
+  const CreateUpdateNoteView({super.key});
 
   @override
-  State<NewNoteView> createState() => _NewNoteViewState();
+  State<CreateUpdateNoteView> createState() => _CreateUpdateNoteViewState();
 }
 
-class _NewNoteViewState extends State<NewNoteView> {
+class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
   DatabaseNote? _note;
   late final NotesService _notesService;
@@ -44,7 +45,17 @@ class _NewNoteViewState extends State<NewNoteView> {
   }
 
   // create new note
-  Future<DatabaseNote> createNewNote() async {
+  Future<DatabaseNote> createOrGetExistingNote(BuildContext context) async {
+
+    final widgetNote = context.getArgument<DatabaseNote>();
+    // getArguements returns an optional database note
+    if (widgetNote != null)     // if they tapped on an existing note
+    {
+      _note = widgetNote;
+      _textController.text = widgetNote.text;
+      return widgetNote;
+    }
+
     //checks if we have created note, otherwise we dont create it again
     final existingNote = _note;
     if (existingNote != null) {
@@ -55,7 +66,9 @@ class _NewNoteViewState extends State<NewNoteView> {
       final email = currentUser.email!;
       final owner = await _notesService.getUser(email: email);
 
-      return await _notesService.createNote(owner: owner);  
+      final newNote = await _notesService.createNote(owner: owner);  //sets the new note, store it and save the note
+      _note = newNote;
+      return newNote;
 
   }
   // if user adds but goes back, then notes will be full of empty cells if they dont populate it. This function checks if its empty
@@ -96,13 +109,12 @@ class _NewNoteViewState extends State<NewNoteView> {
         title: const Text('New Note'),
       ),
       body: FutureBuilder(
-        future: createNewNote(),      // returns database note
+        future: createOrGetExistingNote(context),      // returns database note
         builder: (context, snapshot) {    // returns a widget
         // look for done state
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-
-            _note = snapshot.data as DatabaseNote;
+          
             _setupTextControllerListener();
             return TextField( 
               controller: _textController,      // proxy to a text field

@@ -310,8 +310,6 @@ class NotesService {
   }          
 }
 
-
-
 @immutable
 class DatabaseUser {
   final int id;
@@ -321,8 +319,6 @@ class DatabaseUser {
     required this.id,
     required this.email,
   });
-
-
 
   DatabaseUser.fromRow(Map<String, Object?> map)     // reads the table for every row
       : id = map[idColumn] as int,
