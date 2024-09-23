@@ -20,7 +20,7 @@ class _NotesViewState extends State<NotesView> {
   late final NotesService _notesService;
 
   // make a call to create current user by getting the user email, so we expose the user email
-  String get userEmail => AuthService.firebase().currentUser!.email!;       // ! is used to force unwrap optionals
+  String get userEmail => AuthService.firebase().currentUser!.email;       // ! is used to force unwrap optionals
 
   @override
   void initState() {      // have a notes service in our init state that is open

@@ -63,7 +63,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     }
 
       final currentUser = AuthService.firebase().currentUser!;    // we expect a user to be there, app crashes if user does not exist..this is because they should not be there
-      final email = currentUser.email!;
+      final email = currentUser.email;
       final owner = await _notesService.getUser(email: email);
 
       final newNote = await _notesService.createNote(owner: owner);  //sets the new note, store it and save the note
