@@ -14,6 +14,7 @@ import 'package:mynotes/views/register_view.dart';
 import 'package:mynotes/views/verify_email_view.dart';
 // import 'dart:developer' as devtools show log;
 
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 

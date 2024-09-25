@@ -5,8 +5,8 @@ import 'package:mynotes/services/auth/auth_exceptions.dart';
 // import 'package:mynotes/services/auth/auth_service.dart';
 import 'package:mynotes/services/auth/bloc/auth_bloc.dart';
 import 'package:mynotes/services/auth/bloc/auth_event.dart';
+import 'package:mynotes/services/auth/bloc/auth_state.dart';
 import 'package:mynotes/utilities/dialogs/error_dialog.dart';
-
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -17,19 +17,19 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   late final TextEditingController _email;
-  late final TextEditingController _passowrd;
+  late final TextEditingController _password;
 
   @override
   void initState() {
     _email = TextEditingController();
-    _passowrd = TextEditingController();
+    _password = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
     _email.dispose();
-    _passowrd.dispose();
+    _password.dispose();
     super.dispose();
   }
 
@@ -51,7 +51,7 @@ class _LoginViewState extends State<LoginView> {
             ),
           ),
           TextField(
-            controller: _passowrd,
+            controller: _password,
             obscureText: true,
             enableSuggestions: false,
             autocorrect: false,
@@ -62,7 +62,7 @@ class _LoginViewState extends State<LoginView> {
           TextButton(
             onPressed: () async {
               final email = _email.text;
-              final password = _passowrd.text;
+              final password = _password.text;
 
               try {
                 // await AuthService.firebase().logIn(
@@ -79,11 +79,11 @@ class _LoginViewState extends State<LoginView> {
                 // }
 
                 context.read<AuthBloc>().add(
-                  AuthEventLogIn(
-                    email, 
-                    password,
-                  ),
-                );
+                      AuthEventLogIn(
+                        email,
+                        password,
+                      ),
+                    );
                 // devtools.log(userCredential.toString());
               } on UserNotFoundAuthException {
                 await showErrorDialog(
@@ -104,14 +104,33 @@ class _LoginViewState extends State<LoginView> {
             },
             child: const Text('Login'),
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                registerRoute,
-                (route) => false,
-              );
+          BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) async {
+              if (state is AuthStateLoggedOut)
+              {
+                if (state.exception is UserNotFoundAuthException)
+                {
+                  await showErrorDialog(context, 'User not found');
+                }
+                else if (state.exception is WrongPasswordAuthException)
+                {
+                  await showErrorDialog(context, 'Wrong credentials');
+                }
+                else if (state.exception is GenericAuthException)
+                {
+                  await showErrorDialog(context, 'Authentication error');
+                }
+              }
             },
-            child: const Text("Not Registered yet? Register here!"),
+            child: TextButton(
+              onPressed: () {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  registerRoute,
+                  (route) => false,
+                );
+              },
+              child: const Text("Not Registered yet? Register here!"),
+            ),
           )
         ],
       ),

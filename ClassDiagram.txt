@@ -1,0 +1,312 @@
+@startuml
+set namespaceSeparator ::
+
+class "ThymeToCook::enums::menu_action.dart::MenuAction" {
+  +int index
+  {static} +List<MenuAction> values
+  {static} +MenuAction logout
+}
+
+"ThymeToCook::enums::menu_action.dart::MenuAction" o-- "ThymeToCook::enums::menu_action.dart::MenuAction"
+"dart::core::Enum" <|-- "ThymeToCook::enums::menu_action.dart::MenuAction"
+
+class "ThymeToCook::firebase_options.dart::DefaultFirebaseOptions" {
+  {static} +FirebaseOptions web
+  {static} +FirebaseOptions android
+  {static} +FirebaseOptions ios
+  {static} +FirebaseOptions macos
+  {static} +FirebaseOptions windows
+  {static} +FirebaseOptions currentPlatform
+}
+
+"ThymeToCook::firebase_options.dart::DefaultFirebaseOptions" o-- "firebase_core_platform_interface::firebase_core_platform_interface.dart::FirebaseOptions"
+
+class "ThymeToCook::main.dart::Homepage" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "ThymeToCook::main.dart::Homepage"
+
+class "ThymeToCook::services::auth::auth_exceptions.dart::UserNotFoundAuthException" {
+}
+
+"dart::core::Exception" <|-- "ThymeToCook::services::auth::auth_exceptions.dart::UserNotFoundAuthException"
+
+class "ThymeToCook::services::auth::auth_exceptions.dart::WrongPasswordAuthException" {
+}
+
+"dart::core::Exception" <|-- "ThymeToCook::services::auth::auth_exceptions.dart::WrongPasswordAuthException"
+
+class "ThymeToCook::services::auth::auth_exceptions.dart::WeakPasswordAuthException" {
+}
+
+"dart::core::Exception" <|-- "ThymeToCook::services::auth::auth_exceptions.dart::WeakPasswordAuthException"
+
+class "ThymeToCook::services::auth::auth_exceptions.dart::EmailAlreadyInUseAuthException" {
+}
+
+"dart::core::Exception" <|-- "ThymeToCook::services::auth::auth_exceptions.dart::EmailAlreadyInUseAuthException"
+
+class "ThymeToCook::services::auth::auth_exceptions.dart::InvalidEmailAuthException" {
+}
+
+"dart::core::Exception" <|-- "ThymeToCook::services::auth::auth_exceptions.dart::InvalidEmailAuthException"
+
+class "ThymeToCook::services::auth::auth_exceptions.dart::GenericAuthException" {
+}
+
+"dart::core::Exception" <|-- "ThymeToCook::services::auth::auth_exceptions.dart::GenericAuthException"
+
+class "ThymeToCook::services::auth::auth_exceptions.dart::UserNotLoggedInAuthException" {
+}
+
+"dart::core::Exception" <|-- "ThymeToCook::services::auth::auth_exceptions.dart::UserNotLoggedInAuthException"
+
+abstract class "ThymeToCook::services::auth::auth_provider.dart::AuthProvider" {
+  +AuthUser? currentUser
+  +dynamic initialize()
+  +dynamic logIn()
+  +dynamic createUser()
+  +dynamic logOut()
+  +dynamic sendEmailVerification()
+}
+
+"ThymeToCook::services::auth::auth_provider.dart::AuthProvider" o-- "ThymeToCook::services::auth::auth_user.dart::AuthUser"
+
+class "ThymeToCook::services::auth::auth_service.dart::AuthService" {
+  +AuthProvider provider
+  +AuthUser? currentUser
+  +dynamic createUser()
+  +dynamic logIn()
+  +dynamic logOut()
+  +dynamic sendEmailVerification()
+  +dynamic initialize()
+}
+
+"ThymeToCook::services::auth::auth_service.dart::AuthService" o-- "ThymeToCook::services::auth::auth_provider.dart::AuthProvider"
+"ThymeToCook::services::auth::auth_service.dart::AuthService" o-- "ThymeToCook::services::auth::auth_user.dart::AuthUser"
+"ThymeToCook::services::auth::auth_provider.dart::AuthProvider" <|-- "ThymeToCook::services::auth::auth_service.dart::AuthService"
+
+class "ThymeToCook::services::auth::auth_user.dart::AuthUser" {
+  +String id
+  +String email
+  +bool isEmailVerified
+}
+
+class "ThymeToCook::services::auth::bloc::auth_bloc.dart::AuthBloc" {
+}
+
+"bloc::src::bloc.dart::Bloc" <|-- "ThymeToCook::services::auth::bloc::auth_bloc.dart::AuthBloc"
+
+abstract class "ThymeToCook::services::auth::bloc::auth_event.dart::AuthEvent" {
+}
+
+class "ThymeToCook::services::auth::bloc::auth_event.dart::AuthEventInitialize" {
+}
+
+"ThymeToCook::services::auth::bloc::auth_event.dart::AuthEvent" <|-- "ThymeToCook::services::auth::bloc::auth_event.dart::AuthEventInitialize"
+
+class "ThymeToCook::services::auth::bloc::auth_event.dart::AuthEventLogIn" {
+  +String email
+  +String password
+}
+
+"ThymeToCook::services::auth::bloc::auth_event.dart::AuthEvent" <|-- "ThymeToCook::services::auth::bloc::auth_event.dart::AuthEventLogIn"
+
+class "ThymeToCook::services::auth::bloc::auth_event.dart::AuthEventLogOut" {
+}
+
+"ThymeToCook::services::auth::bloc::auth_event.dart::AuthEvent" <|-- "ThymeToCook::services::auth::bloc::auth_event.dart::AuthEventLogOut"
+
+abstract class "ThymeToCook::services::auth::bloc::auth_state.dart::AuthState" {
+}
+
+class "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateLoading" {
+}
+
+"ThymeToCook::services::auth::bloc::auth_state.dart::AuthState" <|-- "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateLoading"
+
+class "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateLoggedIn" {
+  +AuthUser user
+}
+
+"ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateLoggedIn" o-- "ThymeToCook::services::auth::auth_user.dart::AuthUser"
+"ThymeToCook::services::auth::bloc::auth_state.dart::AuthState" <|-- "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateLoggedIn"
+
+class "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateLoginFailure" {
+  +Exception exception
+}
+
+"ThymeToCook::services::auth::bloc::auth_state.dart::AuthState" <|-- "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateLoginFailure"
+
+class "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateNeedsVerification" {
+}
+
+"ThymeToCook::services::auth::bloc::auth_state.dart::AuthState" <|-- "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateNeedsVerification"     
+
+class "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateLoggedOut" {
+}
+
+"ThymeToCook::services::auth::bloc::auth_state.dart::AuthState" <|-- "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateLoggedOut"
+
+class "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateLogoutFailure" {
+  +Exception exception
+}
+
+"ThymeToCook::services::auth::bloc::auth_state.dart::AuthState" <|-- "ThymeToCook::services::auth::bloc::auth_state.dart::AuthStateLogoutFailure"
+
+class "ThymeToCook::services::auth::firebase_auth_provider.dart::FirebaseAuthProvider" {
+  +AuthUser? currentUser
+  +dynamic initialize()
+  +dynamic createUser()
+  +dynamic logIn()
+  +dynamic logOut()
+  +dynamic sendEmailVerification()
+}
+
+"ThymeToCook::services::auth::firebase_auth_provider.dart::FirebaseAuthProvider" o-- "ThymeToCook::services::auth::auth_user.dart::AuthUser"
+"ThymeToCook::services::auth::auth_provider.dart::AuthProvider" <|-- "ThymeToCook::services::auth::firebase_auth_provider.dart::FirebaseAuthProvider"     
+
+class "ThymeToCook::services::cloud::cloud_note.dart::CloudNote" {
+  +String documentId
+  +String ownerUserId
+  +String text
+}
+
+class "ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CloudStorageException" {
+}
+
+"dart::core::Exception" <|-- "ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CloudStorageException"
+
+class "ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CouldNotCreateNoteException" {
+}
+
+"ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CloudStorageException" <|-- "ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CouldNotCreateNoteException"
+
+class "ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CouldNotGetallRecipesException" {
+}
+
+"ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CloudStorageException" <|-- "ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CouldNotGetallRecipesException"
+
+class "ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CouldNotupdateRecipeException" {
+}
+
+"ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CloudStorageException" <|-- "ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CouldNotupdateRecipeException"
+
+class "ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CouldNotDeleteNoteException" {
+}
+
+"ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CloudStorageException" <|-- "ThymeToCook::services::cloud::cloud_storage_exceptions.dart::CouldNotDeleteNoteException"
+
+class "ThymeToCook::services::cloud::firebase_cloud_storage.dart::FirebaseCloudStorage" {
+  +CollectionReference<Map<String, dynamic>> recipes
+  {static} -FirebaseCloudStorage _shared
+  +dynamic deleteRecipe()
+  +dynamic updateRecipe()
+  +Stream<Iterable<CloudNote>> allRecipes()
+  +dynamic getRecipes()
+  +dynamic createNewRecipe()
+}
+
+"ThymeToCook::services::cloud::firebase_cloud_storage.dart::FirebaseCloudStorage" o-- "cloud_firestore::cloud_firestore.dart::CollectionReference<Map<String, dynamic>>"
+"ThymeToCook::services::cloud::firebase_cloud_storage.dart::FirebaseCloudStorage" o-- "ThymeToCook::services::cloud::firebase_cloud_storage.dart::FirebaseCloudStorage"
+
+class "ThymeToCook::views::login_view.dart::LoginView" {
+  +State<LoginView> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "ThymeToCook::views::login_view.dart::LoginView"
+
+class "ThymeToCook::views::login_view.dart::_LoginViewState" {
+  -TextEditingController _email
+  -TextEditingController _password
+  +void initState()
+  +void dispose()
+  +Widget build()
+}
+
+"ThymeToCook::views::login_view.dart::_LoginViewState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "ThymeToCook::views::login_view.dart::_LoginViewState"
+
+class "ThymeToCook::views::recipes::create_update_note_view.dart::CreateupdateRecipeView" {
+  +State<CreateupdateRecipeView> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "ThymeToCook::views::recipes::create_update_note_view.dart::CreateupdateRecipeView"
+
+class "ThymeToCook::views::recipes::create_update_note_view.dart::_CreateupdateRecipeViewState" {
+  -CloudNote? _note
+  -FirebaseCloudStorage _recipesService
+  -TextEditingController _textController
+  +void initState()
+  -void _textControllerListener()
+  -void _setupTextControllerListener()
+  +dynamic createOrGetExistingRecipe()
+  -void _deleteRecipeIfTextIsEmpty()
+  -void _saveRecipeIfTextNotEmpty()
+  +void dispose()
+  +Widget build()
+}
+
+"ThymeToCook::views::recipes::create_update_note_view.dart::_CreateupdateRecipeViewState" o-- "ThymeToCook::services::cloud::cloud_note.dart::CloudNote"      
+"ThymeToCook::views::recipes::create_update_note_view.dart::_CreateupdateRecipeViewState" o-- "ThymeToCook::services::cloud::firebase_cloud_storage.dart::FirebaseCloudStorage"
+"ThymeToCook::views::recipes::create_update_note_view.dart::_CreateupdateRecipeViewState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "ThymeToCook::views::recipes::create_update_note_view.dart::_CreateupdateRecipeViewState"
+
+class "ThymeToCook::views::recipes::recipes_list_view.dart::RecipeListView" {
+  +Iterable<CloudNote> recipes
+  +void Function(CloudNote) onDeleteRecipe
+  +void Function(CloudNote) onTap
+  +Widget build()
+}
+
+"ThymeToCook::views::recipes::recipes_list_view.dart::RecipeListView" o-- "ThymeToCook::views::recipes::recipes_list_view.dart::void Function(CloudNote)"
+"flutter::src::widgets::framework.dart::StatelessWidget" <|-- "ThymeToCook::views::recipes::recipes_list_view.dart::RecipeListView"
+
+class "ThymeToCook::views::recipes::recipes_view.dart::recipesView" {
+  +State<recipesView> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "ThymeToCook::views::recipes::recipes_view.dart::recipesView"
+
+class "ThymeToCook::views::recipes::recipes_view.dart::_recipesViewState" {
+  -FirebaseCloudStorage _recipesService
+  +String userId
+  +void initState()
+  +Widget build()
+}
+
+"ThymeToCook::views::recipes::recipes_view.dart::_recipesViewState" o-- "ThymeToCook::services::cloud::firebase_cloud_storage.dart::FirebaseCloudStorage"       
+"flutter::src::widgets::framework.dart::State" <|-- "ThymeToCook::views::recipes::recipes_view.dart::_recipesViewState"
+
+class "ThymeToCook::views::register_view.dart::RegisterView" {
+  +State<RegisterView> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "ThymeToCook::views::register_view.dart::RegisterView"
+
+class "ThymeToCook::views::register_view.dart::_RegisterViewState" {
+  -TextEditingController _email
+  -TextEditingController _password
+  +void initState()
+  +void dispose()
+  +Widget build()
+}
+
+"ThymeToCook::views::register_view.dart::_RegisterViewState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "ThymeToCook::views::register_view.dart::_RegisterViewState"
+
+class "ThymeToCook::views::verify_email_view.dart::VerifyEmailView" {
+  +State<VerifyEmailView> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "ThymeToCook::views::verify_email_view.dart::VerifyEmailView"
+
+class "ThymeToCook::views::verify_email_view.dart::_VerifyEmailViewState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "ThymeToCook::views::verify_email_view.dart::_VerifyEmailViewState"
+
+
+@enduml
